@@ -1,14 +1,14 @@
 ---
-title: Streamlit Template Space
+title: Aml 3304 Mentormind Ai Chatbot
 emoji: 🚀
 colorFrom: red
 colorTo: red
 sdk: docker
 app_port: 8501
 tags:
-  - streamlit
+- streamlit
 pinned: false
-short_description: Streamlit template space
+short_description: MentorMind AI – Your Intelligent Academic & Career Co-Pilot
 ---
 
 # Welcome to Streamlit!
