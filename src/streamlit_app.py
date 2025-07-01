@@ -1,40 +1,37 @@
-import altair as alt
-import numpy as np
-import pandas as pd
+import os
+
+os.environ["MPLCONFIGDIR"] = "/tmp"  # Prevent matplotlib config errors
+os.environ["STREAMLIT_BROWSER_GATHER_USAGE_STATS"] = "false"
+os.environ["STREAMLIT_SERVER_HEADLESS"] = "true"
+
 import streamlit as st
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-"""
-# Welcome to Streamlit!
+# Title and UI
+st.set_page_config(page_title="DeepSeek-R1 Chatbot", page_icon="🤖")
+st.title("🧠 MentorMind AI - Your Intelligent Academic & Career Co-Pilot")
+st.caption("Running entirely on CPU using Hugging Face Transformers")
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+# Load the model and tokenizer
+@st.cache_resource
+def load_model():
+    tokenizer = AutoTokenizer.from_pretrained("deepseek-ai/deepseek-llm-7b-chat")
+    model = AutoModelForCausalLM.from_pretrained("deepseek-ai/deepseek-llm-7b-chat")
+    return tokenizer, model
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
+tokenizer, model = load_model()
 
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
+st.chat_message("ai").write("What do you want to learn today?")
+user_input = st.chat_input("I want to learn...")
 
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
+if user_input:
+    st.chat_message("user").write(user_input)
 
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+    with st.spinner("Thinking..."):
+        inputs = tokenizer(user_input, return_tensors="pt")
+        outputs = model.generate(**inputs, max_new_tokens=100)
+        response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        st.chat_message("ai").write(response)
