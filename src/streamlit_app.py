@@ -16,8 +16,13 @@ st.caption("Running entirely on CPU using Hugging Face Transformers")
 # Load the model and tokenizer
 @st.cache_resource
 def load_model():
-    tokenizer = AutoTokenizer.from_pretrained("deepseek-ai/deepseek-llm-7b-chat")
-    model = AutoModelForCausalLM.from_pretrained("deepseek-ai/deepseek-llm-7b-chat")
+    cache_dir = "/tmp/"
+    tokenizer = AutoTokenizer.from_pretrained(
+        "deepseek-ai/deepseek-llm-7b-chat", cache_dir=cache_dir
+    )
+    model = AutoModelForCausalLM.from_pretrained(
+        "deepseek-ai/deepseek-llm-7b-chat", cache_dir=cache_dir
+    )
     return tokenizer, model
 
 
