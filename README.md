@@ -1,12 +1,12 @@
 ---
-title: Aml 3304 Mentormind Ai Chatbot
-emoji: 🚀
-colorFrom: red
-colorTo: red
+title: AML-3304 MentorMind AI Chatbot
+emoji: 🧠
+colorFrom: yellow
+colorTo: yellow
 sdk: docker
 app_port: 8501
 tags:
-- streamlit
+  - streamlit
 pinned: false
 short_description: MentorMind AI – Your Intelligent Academic & Career Co-Pilot
 ---
