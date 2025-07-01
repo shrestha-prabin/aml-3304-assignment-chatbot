@@ -1,29 +1,26 @@
 # .github/workflows/huggingface-push.yml
-name: Push to Hugging Face Hub
+name: Deploy to huggingface
 
 on:
   push:
-    branches:
-      - main # This workflow triggers on pushes to the main branch.
+    branches: [main]
 
 jobs:
-  push-to-hub:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: backendcloud/hugging-push@v0.2.3
         with:
-          fetch-depth: 0 # Fetches all history for all branches and tags
+          # The Hugging Face repo id you want to sync to.
+          # A repo with this name will be created if it doesn't exist. Required.
+          # The github username is not included. ex: not like this 'username/reponame', but like this: 'reponame'
+          # the key of huggingface_repo can be omitted. If the key is commented out, it defaults to the same name as the Github repository. 
+          huggingface_repo: "shrestha-prabin/aml-3304-mentormind-ai-chatbot"
 
-      - name: Push to Hugging Face Hub
-        uses: huggingface/hub-action@v1
-        with:
-          # The ID of the Hugging Face repository.
-          repo_id: "shrestha-prabin/aml-3304-mentormind-ai-chatbot"
+          # Hugging Face token with write access. Required.
+          # Here, we provide a token that we called `HF_TOKEN` when we added the secret to our GitHub repo.
+          hf_token: ${{ secrets.HF_TOKEN }}
 
-          # The type of the repository. Can be "model", "dataset", or "space".
-          repo_type: "space"
-
-          # Your Hugging Face API token.
-          # It's recommended to store this as a secret in your GitHub repository settings.
-          token: ${{ secrets.HF_TOKEN }}
+          # The type of repo you are syncing to: model, dataset, or space.
+          # Defaults to space.
+          repo_type: 'space'
