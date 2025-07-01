@@ -26,12 +26,30 @@ tokenizer, model = load_model()
 st.chat_message("ai").write("What do you want to learn today?")
 user_input = st.chat_input("I want to learn...")
 
+
+# Initialize chat history
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display chat messages from history on app rerun
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
 if user_input:
-    st.chat_message("user").write(user_input)
+    # Display user message in chat message container
+    st.chat_message("user").markdown(user_input)
+
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": user_input})
 
     with st.spinner("Thinking..."):
         inputs = tokenizer(user_input, return_tensors="pt")
         outputs = model.generate(**inputs, max_new_tokens=100)
         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-        st.chat_message("ai").write(response)
+        # Display assistant response in chat message container
+        st.chat_message("ai").markdown(response)
+
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})
