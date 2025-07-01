@@ -1,0 +1,29 @@
+# .github/workflows/huggingface-push.yml
+name: Push to Hugging Face Hub
+
+on:
+  push:
+    branches:
+      - main # This workflow triggers on pushes to the main branch.
+
+jobs:
+  push-to-hub:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetches all history for all branches and tags
+
+      - name: Push to Hugging Face Hub
+        uses: huggingface/hub-action@v1
+        with:
+          # The ID of the Hugging Face repository.
+          repo_id: "shrestha-prabin/aml-3304-mentormind-ai-chatbot"
+
+          # The type of the repository. Can be "model", "dataset", or "space".
+          repo_type: "space"
+
+          # Your Hugging Face API token.
+          # It's recommended to store this as a secret in your GitHub repository settings.
+          token: ${{ secrets.HF_TOKEN }}
